@@ -9,27 +9,11 @@ class StatementPrinter {
         frmt.locale = Locale(identifier: "en_US")
         
         for performance in invoice.performances {
-            var thisAmount = 0
             guard let play = plays[performance.playID] else {
                 throw UnknownTypeError.unknownTypeError("unknown play")
             }
             
-            switch (play.type) {
-            case "tragedy" :
-                    thisAmount = 40000
-                    if (performance.audience > 30) {
-                        thisAmount += 1000 * (performance.audience - 30)
-                    }
-                
-            case "comedy" :
-                    thisAmount = 30000
-                    if (performance.audience > 20) {
-                        thisAmount += 10000 + 500 * (performance.audience - 20)
-                    }
-                    thisAmount += 300 * performance.audience
-            
-            default : throw UnknownTypeError.unknownTypeError("unknown type: \(play.type)")
-            }
+            let thisAmount = try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience)
             
             // add volume credits
             volumeCredits += max(performance.audience - 30, 0)
@@ -46,6 +30,29 @@ class StatementPrinter {
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount / 100)))!)\n"
         result += "You earned \(volumeCredits) credits\n"
         return result
+        
+        func performanceDollarCostTotalFor(genre: String, attendance: Int) throws -> Int {
+            var cost: Int = 0
+            
+            switch (genre) {
+            case "tragedy" :
+                cost = 40000
+                if (attendance > 30) {
+                    cost += 1000 * (attendance - 30)
+                }
+                
+            case "comedy" :
+                cost = 30000
+                if (attendance > 20) {
+                    cost += 10000 + 500 * (attendance - 20)
+                }
+                cost += 300 * attendance
+                
+            default : throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
+            }
+            
+            return cost
+        }
     }
 }
 
