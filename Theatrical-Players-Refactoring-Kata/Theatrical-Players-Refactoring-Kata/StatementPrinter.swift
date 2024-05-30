@@ -13,8 +13,6 @@ class StatementPrinter {
                 throw UnknownTypeError.unknownTypeError("unknown play")
             }
             
-            let thisAmount = try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience)
-            
             // add volume credits
             volumeCredits += max(performance.audience - 30, 0)
             // add extra credit for every ten comedy attendees
@@ -23,9 +21,9 @@ class StatementPrinter {
             }
             
             // print line for this order
-            result += "  \(play.name): \(frmt.string(for: NSNumber(value: Double((thisAmount / 100))))!) (\(performance.audience) seats)\n"
+            result += "  \(play.name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience) / 100))))!) (\(performance.audience) seats)\n"
             
-            totalAmount += thisAmount
+            totalAmount += try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience)
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount / 100)))!)\n"
         result += "You earned \(volumeCredits) credits\n"
