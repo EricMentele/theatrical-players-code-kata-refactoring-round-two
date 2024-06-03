@@ -1,6 +1,5 @@
 class StatementPrinter {
     func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        let volumeCredits = try totalVolumeCreditsFor(invoice.performances)
         var result = "Statement for \(invoice.customer)\n"
         
         let frmt = NumberFormatter()
@@ -12,7 +11,7 @@ class StatementPrinter {
             result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
-        result += "You earned \(volumeCredits) credits\n"
+        result += "You earned \(try totalVolumeCreditsFor(invoice.performances)) credits\n"
         return result
         
         func totalVolumeCreditsFor(_ performances: [Performance]) throws -> Int {
