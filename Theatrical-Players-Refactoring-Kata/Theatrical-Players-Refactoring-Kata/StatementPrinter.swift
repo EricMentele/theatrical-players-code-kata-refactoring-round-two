@@ -1,6 +1,11 @@
 class StatementPrinter {
+    struct StatementData {
+        let customerName: String
+    }
+    
     func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        var result = "Statement for \(invoice.customer)\n"
+        let statementData = StatementData(customerName: invoice.customer)
+        var result = "Statement for \(statementData.customerName)\n"
         
         let frmt = NumberFormatter()
         frmt.numberStyle = .currency
