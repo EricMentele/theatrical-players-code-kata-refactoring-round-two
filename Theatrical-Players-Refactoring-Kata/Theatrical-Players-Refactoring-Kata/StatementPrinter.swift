@@ -10,7 +10,9 @@ class StatementPrinter {
         for performance in invoice.performances {
             // add volume credits
             volumeCredits += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
-            
+        }
+        
+        for performance in invoice.performances {
             // print line for this order
             result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
         }
@@ -24,6 +26,7 @@ class StatementPrinter {
             // add extra credit for every ten comedy attendees
             if ("comedy" == genre) {
                 volumeCredits += Int(round(Double(audienceCount / 5)))
+                result += Int(round(Double(audienceCount / 5)))
             }
             return result
         }
