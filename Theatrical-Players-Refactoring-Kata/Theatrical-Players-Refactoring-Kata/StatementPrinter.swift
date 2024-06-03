@@ -9,6 +9,10 @@ class StatementPrinter {
         frmt.locale = Locale(identifier: "en_US")
         
         for performance in invoice.performances {
+            totalAmount += try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)
+        }
+        
+        for performance in invoice.performances {
             // add volume credits
             volumeCredits += max(performance.audience - 30, 0)
             // add extra credit for every ten comedy attendees
@@ -18,12 +22,12 @@ class StatementPrinter {
             
             // print line for this order
             result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
-            
-            totalAmount += try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount)))!)\n"
         result += "You earned \(volumeCredits) credits\n"
         return result
+        
+        
         
         func playFor(playID: String) throws -> Play {
             guard let play = plays[playID] else {
