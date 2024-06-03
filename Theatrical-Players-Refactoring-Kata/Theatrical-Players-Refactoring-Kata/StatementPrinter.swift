@@ -1,16 +1,12 @@
 class StatementPrinter {
     func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        var totalAmount = 0
+        var totalAmount = try totalCostOf(invoice.performances)
         var volumeCredits = 0
         var result = "Statement for \(invoice.customer)\n"
         
         let frmt = NumberFormatter()
         frmt.numberStyle = .currency
         frmt.locale = Locale(identifier: "en_US")
-        
-        for performance in invoice.performances {
-            totalAmount += try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)
-        }
         
         for performance in invoice.performances {
             // add volume credits
@@ -27,7 +23,13 @@ class StatementPrinter {
         result += "You earned \(volumeCredits) credits\n"
         return result
         
-        
+        func totalCostOf(_ performances: [Performance]) throws -> Int {
+            var result = 0
+            for performance in performances {
+                result += try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)
+            }
+            return result
+        }
         
         func playFor(playID: String) throws -> Play {
             guard let play = plays[playID] else {
