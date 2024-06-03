@@ -9,11 +9,7 @@ class StatementPrinter {
         
         for performance in invoice.performances {
             // add volume credits
-            volumeCredits += max(performance.audience - 30, 0)
-            // add extra credit for every ten comedy attendees
-            if ("comedy" == (try playFor(playID: performance.playID).type)) {
-                volumeCredits += Int(round(Double(performance.audience / 5)))
-            }
+            volumeCredits += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
             
             // print line for this order
             result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
@@ -21,6 +17,16 @@ class StatementPrinter {
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
         result += "You earned \(volumeCredits) credits\n"
         return result
+        
+        func volumeCreditsFor(genre: String, audienceCount: Int) -> Int {
+            // add volume credits
+            var result = max(audienceCount - 30, 0)
+            // add extra credit for every ten comedy attendees
+            if ("comedy" == genre) {
+                volumeCredits += Int(round(Double(audienceCount / 5)))
+            }
+            return result
+        }
         
         func totalCostOf(_ performances: [Performance]) throws -> Int {
             var result = 0
