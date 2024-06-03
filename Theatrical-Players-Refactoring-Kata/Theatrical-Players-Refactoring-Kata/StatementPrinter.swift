@@ -1,6 +1,5 @@
 class StatementPrinter {
     func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        var totalAmount = try totalCostOf(invoice.performances)
         var volumeCredits = 0
         var result = "Statement for \(invoice.customer)\n"
         
@@ -19,7 +18,7 @@ class StatementPrinter {
             // print line for this order
             result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
         }
-        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount)))!)\n"
+        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
         result += "You earned \(volumeCredits) credits\n"
         return result
         
