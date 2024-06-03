@@ -1,5 +1,5 @@
 class StatementPrinter {
-    func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
+    func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
         var result = "Statement for \(invoice.customer)\n"
         
         let frmt = NumberFormatter()
