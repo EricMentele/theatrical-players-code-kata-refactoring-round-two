@@ -1,16 +1,11 @@
 class StatementPrinter {
     func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        var volumeCredits = 0
+        let volumeCredits = try totalVolumeCreditsFor(invoice.performances)
         var result = "Statement for \(invoice.customer)\n"
         
         let frmt = NumberFormatter()
         frmt.numberStyle = .currency
         frmt.locale = Locale(identifier: "en_US")
-        
-        for performance in invoice.performances {
-            // add volume credits
-            volumeCredits += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
-        }
         
         for performance in invoice.performances {
             // print line for this order
@@ -20,12 +15,21 @@ class StatementPrinter {
         result += "You earned \(volumeCredits) credits\n"
         return result
         
+        func totalVolumeCreditsFor(_ performances: [Performance]) throws -> Int {
+            var result = 0
+            for performance in invoice.performances {
+                // add volume credits
+                result += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
+            }
+            
+            return result
+        }
+        
         func volumeCreditsFor(genre: String, audienceCount: Int) -> Int {
             // add volume credits
             var result = max(audienceCount - 30, 0)
             // add extra credit for every ten comedy attendees
             if ("comedy" == genre) {
-                volumeCredits += Int(round(Double(audienceCount / 5)))
                 result += Int(round(Double(audienceCount / 5)))
             }
             return result
