@@ -21,11 +21,11 @@ class StatementPrinter {
             }
             
             // print line for this order
-            result += "  \(play.name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience) / 100))))!) (\(performance.audience) seats)\n"
+            result += "  \(play.name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
             
             totalAmount += try performanceDollarCostTotalFor(genre: play.type, attendance: performance.audience)
         }
-        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount / 100)))!)\n"
+        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount)))!)\n"
         result += "You earned \(volumeCredits) credits\n"
         return result
         
@@ -49,7 +49,7 @@ class StatementPrinter {
             default : throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
             }
             
-            return cost
+            return cost / 100
         }
     }
 }
