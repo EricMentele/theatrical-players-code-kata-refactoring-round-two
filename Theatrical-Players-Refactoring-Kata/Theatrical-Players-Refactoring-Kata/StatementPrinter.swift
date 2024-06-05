@@ -2,12 +2,14 @@ class StatementPrinter {
     struct StatementData {
         let customerName: String
         let costLineItemsData: [(String, Int, Int)]
+        let totalCost: Int
     }
     
     func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
         let statementData = StatementData(
             customerName: invoice.customer,
-            costLineItemsData: try invoice.performances.map(statementLineData)
+            costLineItemsData: try invoice.performances.map(statementCostLineData), 
+            totalCost: try invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 }
         )
         var result = "Statement for \(statementData.customerName)\n"
         
@@ -19,13 +21,13 @@ class StatementPrinter {
             // print line for this order
             result += "  \(costLineItem.0):" + " \(frmt.string(for: NSNumber(value: Double((costLineItem.1))))!)" + " (\(costLineItem.2) seats)\n"
         }
-        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
+        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(statementData.totalCost)))!)\n"
         result += "You earned \(try totalVolumeCreditsFor(invoice.performances)) credits\n"
         return result
         
         // MARK: Helpers
         
-        func statementLineData(_ performance: Performance) throws -> (String, Int, Int) {
+        func statementCostLineData(_ performance: Performance) throws -> (String, Int, Int) {
             (try playFor(playID: performance.playID).name,
              try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience),
              performance.audience)
@@ -47,14 +49,6 @@ class StatementPrinter {
             // add extra credit for every ten comedy attendees
             if ("comedy" == genre) {
                 result += Int(round(Double(audienceCount / 5)))
-            }
-            return result
-        }
-        
-        func totalCostOf(_ performances: [Performance]) throws -> Int {
-            var result = 0
-            for performance in performances {
-                result += try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)
             }
             return result
         }
