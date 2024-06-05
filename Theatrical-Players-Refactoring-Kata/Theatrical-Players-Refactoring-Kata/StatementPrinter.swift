@@ -3,13 +3,15 @@ class StatementPrinter {
         let customerName: String
         let costLineItemsData: [(String, Int, Int)]
         let totalCost: Int
+        let totalVolumeCredits: Int
     }
     
     func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
         let statementData = StatementData(
             customerName: invoice.customer,
             costLineItemsData: try invoice.performances.map(statementCostLineData), 
-            totalCost: try invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 }
+            totalCost: try invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 },
+            totalVolumeCredits: try totalVolumeCreditsFor(invoice.performances)
         )
         var result = "Statement for \(statementData.customerName)\n"
         
@@ -22,7 +24,7 @@ class StatementPrinter {
             result += "  \(costLineItem.0):" + " \(frmt.string(for: NSNumber(value: Double((costLineItem.1))))!)" + " (\(costLineItem.2) seats)\n"
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(statementData.totalCost)))!)\n"
-        result += "You earned \(try totalVolumeCreditsFor(invoice.performances)) credits\n"
+        result += "You earned \(statementData.totalVolumeCredits) credits\n"
         return result
         
         // MARK: Helpers
