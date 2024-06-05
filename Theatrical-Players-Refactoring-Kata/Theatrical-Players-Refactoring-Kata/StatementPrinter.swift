@@ -15,7 +15,7 @@ class StatementPrinter {
         
         for performance in invoice.performances {
             // print line for this order
-            result += "  \(try statementLineData(performance)):" + " \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!)" + " (\(performance.audience) seats)\n"
+            result += "  \(try statementLineData(performance).0):" + " \(frmt.string(for: NSNumber(value: Double((try statementLineData(performance).1))))!)" + " (\(performance.audience) seats)\n"
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
         result += "You earned \(try totalVolumeCreditsFor(invoice.performances)) credits\n"
@@ -23,8 +23,8 @@ class StatementPrinter {
         
         // MARK: Helpers
         
-        func statementLineData(_ performance: Performance) throws -> (String) {
-            (try playFor(playID: performance.playID).name)
+        func statementLineData(_ performance: Performance) throws -> (String, Int) {
+            (try playFor(playID: performance.playID).name, try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience))
         }
         
         func totalVolumeCreditsFor(_ performances: [Performance]) throws -> Int {
