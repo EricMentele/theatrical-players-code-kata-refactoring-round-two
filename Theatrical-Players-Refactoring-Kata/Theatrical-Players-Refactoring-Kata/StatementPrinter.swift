@@ -1,18 +1,16 @@
-class StatementPrinter {
-    struct StatementData {
-        let customerName: String
-        let costLineItemsData: [(String, Int, Int)]
-        let totalCost: Int
-        let totalVolumeCredits: Int
-    }
-    
-    func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        let statementData = StatementData(
-            customerName: invoice.customer,
-            costLineItemsData: try invoice.performances.map(statementCostLineData), 
-            totalCost: try invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 },
-            totalVolumeCredits: try totalVolumeCreditsFor(invoice.performances)
-        )
+protocol StatementProvider {
+    func formattedStatement(from statementData: StatementData) -> String
+}
+
+struct StatementData {
+    let customerName: String
+    let costLineItemsData: [(String, Int, Int)]
+    let totalCost: Int
+    let totalVolumeCredits: Int
+}
+
+class StatementPrinter: StatementProvider {
+    func formattedStatement(from statementData: StatementData) -> String {
         var result = "Statement for \(statementData.customerName)\n"
         
         let frmt = NumberFormatter()
@@ -26,7 +24,17 @@ class StatementPrinter {
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(statementData.totalCost)))!)\n"
         result += "You earned \(statementData.totalVolumeCredits) credits\n"
         return result
+    }
+    
+    func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
+        let statementData = StatementData(
+            customerName: invoice.customer,
+            costLineItemsData: try invoice.performances.map(statementCostLineData), 
+            totalCost: try invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 },
+            totalVolumeCredits: try totalVolumeCreditsFor(invoice.performances)
+        )
         
+        return formattedStatement(from: statementData)
         // MARK: Helpers
         
         func statementCostLineData(_ performance: Performance) throws -> (String, Int, Int) {
