@@ -1,11 +1,13 @@
 class StatementPrinter {
     struct StatementData {
         let customerName: String
+        let costLineItemsData: [(String, Int, Int)]
     }
     
     func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
         let statementData = StatementData(
-            customerName: invoice.customer
+            customerName: invoice.customer,
+            costLineItemsData: try invoice.performances.map(statementLineData)
         )
         var result = "Statement for \(statementData.customerName)\n"
         
@@ -13,9 +15,9 @@ class StatementPrinter {
         frmt.numberStyle = .currency
         frmt.locale = Locale(identifier: "en_US")
         
-        for performance in invoice.performances {
+        for costLineItem in statementData.costLineItemsData {
             // print line for this order
-            result += "  \(try statementLineData(performance).0):" + " \(frmt.string(for: NSNumber(value: Double((try statementLineData(performance).1))))!)" + " (\(try statementLineData(performance).2) seats)\n"
+            result += "  \(costLineItem.0):" + " \(frmt.string(for: NSNumber(value: Double((costLineItem.1))))!)" + " (\(costLineItem.2) seats)\n"
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
         result += "You earned \(try totalVolumeCreditsFor(invoice.performances)) credits\n"
