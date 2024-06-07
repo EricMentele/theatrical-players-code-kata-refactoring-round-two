@@ -88,12 +88,7 @@ extension StatementPrinter: StatementDataProvider {
             case "tragedy" :
                 cost = try costCalculationFor(genre: genre)(attendance)
             case "comedy" :
-                cost = 30000
-                if (attendance > 20) {
-                    cost += 10000 + 500 * (attendance - 20)
-                }
-                cost += 300 * attendance
-                
+                cost = try costCalculationFor(genre: genre)(attendance)
             default : throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
             }
             
@@ -110,6 +105,14 @@ extension StatementPrinter: StatementDataProvider {
                         result += 1000 * (attendance - 30)
                     }
                     return result
+                }
+            case "comedy" :
+                return { attendance in
+                    var result = 30000
+                    if (attendance > 20) {
+                        result += 10000 + 500 * (attendance - 20)
+                    }
+                    return result + 300 * attendance
                 }
             default:
                 throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
