@@ -7,8 +7,14 @@ protocol StatementDataProvider {
 }
 
 struct StatementData {
+    typealias Charge = (
+        playName: String,
+        amount: Int,
+        attendanceCount: Int
+    )
+    
     let customerName: String
-    let costLineItemsData: [(String, Int, Int)]
+    let charges: [Charge]
     let totalCost: Int
     let totalVolumeCredits: Int
 }
@@ -21,7 +27,7 @@ class StatementPrinter: StatementProvider {
         frmt.numberStyle = .currency
         frmt.locale = Locale(identifier: "en_US")
         
-        for costLineItem in statementData.costLineItemsData {
+        for costLineItem in statementData.charges {
             // print line for this order
             result += "  \(costLineItem.0):" + " \(frmt.string(for: NSNumber(value: Double((costLineItem.1))))!)" + " (\(costLineItem.2) seats)\n"
         }
@@ -35,13 +41,13 @@ extension StatementPrinter: StatementDataProvider {
     func statementData(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> StatementData {
         return try StatementData(
             customerName: invoice.customer,
-            costLineItemsData: invoice.performances.map(statementCostLineData),
+            charges: invoice.performances.map(statementCostLineData),
             totalCost: invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 },
             totalVolumeCredits: totalVolumeCreditsFor(invoice.performances)
         )
         // MARK: Helpers
         
-        func statementCostLineData(_ performance: Performance) throws -> (String, Int, Int) {
+        func statementCostLineData(_ performance: Performance) throws -> StatementData.Charge {
             (try playFor(playID: performance.playID).name,
              try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience),
              performance.audience)
