@@ -2,6 +2,10 @@ protocol StatementProvider {
     func formattedStatement(from statementData: StatementData) -> String
 }
 
+protocol StatementDataProvider {
+    func statementData(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> StatementData
+}
+
 struct StatementData {
     let customerName: String
     let costLineItemsData: [(String, Int, Int)]
@@ -25,16 +29,16 @@ class StatementPrinter: StatementProvider {
         result += "You earned \(statementData.totalVolumeCredits) credits\n"
         return result
     }
-    
-    func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        let statementData = StatementData(
+}
+
+extension StatementPrinter: StatementDataProvider {
+    func statementData(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> StatementData {
+        return try StatementData(
             customerName: invoice.customer,
-            costLineItemsData: try invoice.performances.map(statementCostLineData), 
-            totalCost: try invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 },
-            totalVolumeCredits: try totalVolumeCreditsFor(invoice.performances)
+            costLineItemsData: invoice.performances.map(statementCostLineData),
+            totalCost: invoice.performances.map(statementCostLineData).reduce(into: 0) { $0 += $1.1 },
+            totalVolumeCredits: totalVolumeCreditsFor(invoice.performances)
         )
-        
-        return formattedStatement(from: statementData)
         // MARK: Helpers
         
         func statementCostLineData(_ performance: Performance) throws -> (String, Int, Int) {
