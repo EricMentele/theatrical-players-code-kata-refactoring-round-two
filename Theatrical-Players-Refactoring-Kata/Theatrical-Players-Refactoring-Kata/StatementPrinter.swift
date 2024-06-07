@@ -49,7 +49,7 @@ extension StatementPrinter: StatementDataProvider {
         
         func statementCostLineData(_ performance: Performance) throws -> StatementData.Charge {
             (try playFor(playID: performance.playID).name,
-             try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience),
+             try amountFor(genre: try playFor(playID: performance.playID).type)(performance.audience),
              performance.audience)
         }
         
@@ -81,22 +81,8 @@ extension StatementPrinter: StatementDataProvider {
             return play
         }
         
-        func performanceDollarCostTotalFor(genre: String, attendance: Int) throws -> Int {
-            var cost: Int = 0
-            
-            switch (genre) {
-            case "tragedy" :
-                cost = try costCalculationFor(genre: genre)(attendance)
-            case "comedy" :
-                cost = try costCalculationFor(genre: genre)(attendance)
-            default : throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
-            }
-            
-            return cost / 100
-        }
-        
         typealias AmountCalculator = (Int) -> Int
-        func costCalculationFor(genre: String) throws -> AmountCalculator {
+        func amountFor(genre: String) throws -> AmountCalculator {
             switch (genre) {
             case "tragedy" :
                 return { attendance in
@@ -104,7 +90,7 @@ extension StatementPrinter: StatementDataProvider {
                     if (attendance > 30) {
                         result += 1000 * (attendance - 30)
                     }
-                    return result
+                    return result / 100
                 }
             case "comedy" :
                 return { attendance in
@@ -112,7 +98,7 @@ extension StatementPrinter: StatementDataProvider {
                     if (attendance > 20) {
                         result += 10000 + 500 * (attendance - 20)
                     }
-                    return result + 300 * attendance
+                    return (result + 300 * attendance) / 100
                 }
             default:
                 throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
