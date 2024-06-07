@@ -86,11 +86,7 @@ extension StatementPrinter: StatementDataProvider {
             
             switch (genre) {
             case "tragedy" :
-                cost = 40000
-                if (attendance > 30) {
-                    cost += 1000 * (attendance - 30)
-                }
-                
+                cost = try costCalculationFor(genre: genre)(attendance)
             case "comedy" :
                 cost = 30000
                 if (attendance > 20) {
@@ -102,6 +98,22 @@ extension StatementPrinter: StatementDataProvider {
             }
             
             return cost / 100
+        }
+        
+        typealias AmountCalculator = (Int) -> Int
+        func costCalculationFor(genre: String) throws -> AmountCalculator {
+            switch (genre) {
+            case "tragedy" :
+                return { attendance in
+                    var result = 40000
+                    if (attendance > 30) {
+                        result += 1000 * (attendance - 30)
+                    }
+                    return result
+                }
+            default:
+                throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
+            }
         }
     }
 }
