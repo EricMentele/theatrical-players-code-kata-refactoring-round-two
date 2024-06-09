@@ -2,6 +2,24 @@
 import XCTest
 @testable import Theatrical_Players_Refactoring_Kata
 
+struct GenreCostProvider: GenreAmountProvider {
+    func amountFor(genre: String) throws -> AmountCalculator {
+        throw GenreError.newGenre
+    }
+    
+    enum GenreError: Error {
+        case newGenre
+    }
+}
+
+class GenreAmountProviderTests: XCTestCase {
+    func test_amountFor_throwsErrorOnNewPlayGenre() throws {
+        let sut = GenreCostProvider()
+        
+        XCTAssertThrowsError(try sut.amountFor(genre: "always new"))
+    }
+}
+
 class StatementPrinterTests: XCTestCase {
     func test_exampleStatement() throws {
         
