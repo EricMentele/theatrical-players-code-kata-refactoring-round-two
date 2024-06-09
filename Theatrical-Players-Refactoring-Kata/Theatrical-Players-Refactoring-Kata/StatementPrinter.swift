@@ -6,6 +6,12 @@ protocol StatementDataProvider {
     func statementData(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> StatementData
 }
 
+protocol GenreAmountProvider {
+    typealias AmountCalculator = (Int) -> Int
+    
+    func amountFor(genre: String) throws -> AmountCalculator
+}
+
 struct StatementData {
     typealias Charge = (
         playName: String,
@@ -80,29 +86,30 @@ extension StatementPrinter: StatementDataProvider {
             
             return play
         }
-        
-        typealias AmountCalculator = (Int) -> Int
-        func amountFor(genre: String) throws -> AmountCalculator {
-            switch (genre) {
-            case "tragedy" :
-                return { attendance in
-                    var result = 40000
-                    if (attendance > 30) {
-                        result += 1000 * (attendance - 30)
-                    }
-                    return result / 100
+    }
+}
+
+extension StatementPrinter: GenreAmountProvider {
+    func amountFor(genre: String) throws -> AmountCalculator {
+        switch (genre) {
+        case "tragedy" :
+            return { attendance in
+                var result = 40000
+                if (attendance > 30) {
+                    result += 1000 * (attendance - 30)
                 }
-            case "comedy" :
-                return { attendance in
-                    var result = 30000
-                    if (attendance > 20) {
-                        result += 10000 + 500 * (attendance - 20)
-                    }
-                    return (result + 300 * attendance) / 100
-                }
-            default:
-                throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
+                return result / 100
             }
+        case "comedy" :
+            return { attendance in
+                var result = 30000
+                if (attendance > 20) {
+                    result += 10000 + 500 * (attendance - 20)
+                }
+                return (result + 300 * attendance) / 100
+            }
+        default:
+            throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
         }
     }
 }
