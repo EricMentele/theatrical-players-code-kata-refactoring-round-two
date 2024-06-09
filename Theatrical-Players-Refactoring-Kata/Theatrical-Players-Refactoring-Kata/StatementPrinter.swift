@@ -49,7 +49,7 @@ extension StatementPrinter: StatementDataProvider {
         
         func statementCostLineData(_ performance: Performance) throws -> StatementData.Charge {
             (try playFor(playID: performance.playID).name,
-             try amountFor(genre: try playFor(playID: performance.playID).type)(performance.audience),
+             try amountFor(genre: try playFor(playID: performance.playID).genre)(performance.audience),
              performance.audience)
         }
         
@@ -57,7 +57,7 @@ extension StatementPrinter: StatementDataProvider {
             var result = 0
             for performance in invoice.performances {
                 // add volume credits
-                result += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
+                result += volumeCreditsFor(genre: try playFor(playID: performance.playID).genre, audienceCount: performance.audience)
             }
             
             return result
