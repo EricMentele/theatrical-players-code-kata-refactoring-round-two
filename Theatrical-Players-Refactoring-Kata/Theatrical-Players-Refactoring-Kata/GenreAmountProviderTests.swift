@@ -27,10 +27,12 @@ class GenreAmountProviderTests: XCTestCase {
     func test_amountFor_hasCorrectCostWhenBaseVolume() throws {
         let sut = GenreDollarCostProvider()
         let cases: [(String, Int)] = [
-            ("pastoral", 30)
+            ("pastoral", 30),
+            ("history", 30)
         ]
         let expected = [
-            "pastoral": 400
+            "pastoral": 400,
+            "history": 400
         ]
         
         for testCase in cases {

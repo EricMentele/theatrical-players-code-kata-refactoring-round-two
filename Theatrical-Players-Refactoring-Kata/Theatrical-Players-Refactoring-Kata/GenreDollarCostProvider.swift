@@ -3,7 +3,7 @@ import Foundation
 struct GenreDollarCostProvider: GenreAmountProvider {
     func amountFor(genre: String) throws -> AmountCalculator {
         switch (genre) {
-        case "tragedy", "pastoral" :
+        case "tragedy", "pastoral", "history" :
             return { attendance in
                 var result = 40000
                 if (attendance > 30) {

@@ -38,8 +38,8 @@ class StatementPrinterTests: XCTestCase {
     
     func test_statementWithNewPlayTypes() {
         let plays = [
-            "henry-v": Play(name: "Henry V", genre: "history"),
-            "as-like": Play(name: "As You Like It", genre: "pastoral")
+            "henry-v": Play(name: "Henry V", genre: "always new"),
+            "as-like": Play(name: "As You Like It", genre: "always new")
         ]
         
         let invoice = Invoice(
