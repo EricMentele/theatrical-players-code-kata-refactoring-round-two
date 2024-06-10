@@ -26,6 +26,8 @@ struct StatementData {
 }
 
 class StatementPrinter: StatementProvider {
+    let genreCostProvider: GenreAmountProvider
+    
     func formattedStatement(from statementData: StatementData) -> String {
         var result = "Statement for \(statementData.customerName)\n"
         
@@ -41,6 +43,10 @@ class StatementPrinter: StatementProvider {
         result += "You earned \(statementData.totalVolumeCredits) credits\n"
         return result
     }
+    
+    init(genreCostProvider: GenreAmountProvider = GenreCostProvider()) {
+        self.genreCostProvider = genreCostProvider
+    }
 }
 
 extension StatementPrinter: StatementDataProvider {
@@ -55,7 +61,7 @@ extension StatementPrinter: StatementDataProvider {
         
         func statementCostLineData(_ performance: Performance) throws -> StatementData.Charge {
             (try playFor(playID: performance.playID).name,
-             try amountFor(genre: try playFor(playID: performance.playID).genre)(performance.audience),
+             try genreCostProvider.amountFor(genre: try playFor(playID: performance.playID).genre)(performance.audience),
              performance.audience)
         }
         
@@ -85,31 +91,6 @@ extension StatementPrinter: StatementDataProvider {
             }
             
             return play
-        }
-    }
-}
-
-extension StatementPrinter: GenreAmountProvider {
-    func amountFor(genre: String) throws -> AmountCalculator {
-        switch (genre) {
-        case "tragedy" :
-            return { attendance in
-                var result = 40000
-                if (attendance > 30) {
-                    result += 1000 * (attendance - 30)
-                }
-                return result / 100
-            }
-        case "comedy" :
-            return { attendance in
-                var result = 30000
-                if (attendance > 20) {
-                    result += 10000 + 500 * (attendance - 20)
-                }
-                return (result + 300 * attendance) / 100
-            }
-        default:
-            throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
         }
     }
 }

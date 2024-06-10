@@ -4,7 +4,6 @@ import XCTest
 
 class StatementPrinterTests: XCTestCase {
     func test_exampleStatement() throws {
-        
         let expected = """
             Statement for BigCo
               Hamlet: $650.00 (55 seats)
