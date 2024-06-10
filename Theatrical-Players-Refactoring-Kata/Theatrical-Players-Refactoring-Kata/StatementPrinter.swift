@@ -1,6 +1,5 @@
 class StatementPrinter {
-    func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        var volumeCredits = 0
+    func formattedStatementText(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
         var result = "Statement for \(invoice.customer)\n"
         
         let frmt = NumberFormatter()
@@ -8,19 +7,32 @@ class StatementPrinter {
         frmt.locale = Locale(identifier: "en_US")
         
         for performance in invoice.performances {
-            // add volume credits
-            volumeCredits += max(performance.audience - 30, 0)
-            // add extra credit for every ten comedy attendees
-            if ("comedy" == (try playFor(playID: performance.playID).type)) {
-                volumeCredits += Int(round(Double(performance.audience / 5)))
-            }
-            
             // print line for this order
             result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
         }
         result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
-        result += "You earned \(volumeCredits) credits\n"
+        result += "You earned \(try totalVolumeCreditsFor(invoice.performances)) credits\n"
         return result
+        
+        func totalVolumeCreditsFor(_ performances: [Performance]) throws -> Int {
+            var result = 0
+            for performance in invoice.performances {
+                // add volume credits
+                result += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
+            }
+            
+            return result
+        }
+        
+        func volumeCreditsFor(genre: String, audienceCount: Int) -> Int {
+            // add volume credits
+            var result = max(audienceCount - 30, 0)
+            // add extra credit for every ten comedy attendees
+            if ("comedy" == genre) {
+                result += Int(round(Double(audienceCount / 5)))
+            }
+            return result
+        }
         
         func totalCostOf(_ performances: [Performance]) throws -> Int {
             var result = 0
