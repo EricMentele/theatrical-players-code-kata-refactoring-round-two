@@ -23,4 +23,18 @@ class GenreAmountProviderTests: XCTestCase {
             XCTAssertEqual(try sut.amountFor(genre: testCase.0)(testCase.1), expected[testCase.0]!)
         }
     }
+    
+    func test_amountFor_hasCorrectCostWhenBaseVolume() throws {
+        let sut = GenreDollarCostProvider()
+        let cases: [(String, Int)] = [
+            ("pastoral", 30)
+        ]
+        let expected = [
+            "pastoral": 400
+        ]
+        
+        for testCase in cases {
+            XCTAssertEqual(try sut.amountFor(genre: testCase.0)(testCase.1), expected[testCase.0]!)
+        }
+    }
 }
