@@ -38,16 +38,20 @@ class GenreAmountProviderTests: XCTestCase {
         XCTAssertThrowsError(try sut.amountFor(genre: "always new"))
     }
     
-    func test_amountFor_hasCorrectCalculationWhenGenreIsTragedy() throws {
+    func test_amountFor_hasCorrectCostWhenHighVolume() throws {
         let sut = GenreCostProvider()
-
-        XCTAssertEqual(try sut.amountFor(genre: "tragedy")(55), 650)
-    }
-    
-    func test_amountFor_hasCorrectCalculationWhenGenreIsComedy() throws {
-        let sut = GenreCostProvider()
+        let cases: [(String, Int)] = [
+            ("tragedy", 55),
+            ("comedy", 35)
+        ]
+        let expected = [
+            "tragedy": 650, 
+            "comedy": 580
+        ]
         
-        XCTAssertEqual(try sut.amountFor(genre: "comedy")(35), 580)
+        for testCase in cases {
+            XCTAssertEqual(try sut.amountFor(genre: testCase.0)(testCase.1), expected[testCase.0]!)
+        }
     }
 }
 
