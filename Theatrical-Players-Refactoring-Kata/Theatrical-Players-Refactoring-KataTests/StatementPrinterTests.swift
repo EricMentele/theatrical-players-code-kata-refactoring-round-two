@@ -43,6 +43,12 @@ class GenreAmountProviderTests: XCTestCase {
 
         XCTAssertEqual(try sut.amountFor(genre: "tragedy")(55), 650)
     }
+    
+    func test_amountFor_hasCorrectCalculationWhenGenreIsComedy() throws {
+        let sut = GenreCostProvider()
+        
+        XCTAssertEqual(try sut.amountFor(genre: "comedy")(35), 580)
+    }
 }
 
 class StatementPrinterTests: XCTestCase {
