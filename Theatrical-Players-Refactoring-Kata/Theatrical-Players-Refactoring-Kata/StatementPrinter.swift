@@ -44,7 +44,7 @@ class StatementPrinter: StatementProvider {
         return result
     }
     
-    init(genreCostProvider: GenreAmountProvider = GenreCostProvider()) {
+    init(genreCostProvider: GenreAmountProvider = GenreDollarCostProvider()) {
         self.genreCostProvider = genreCostProvider
     }
 }

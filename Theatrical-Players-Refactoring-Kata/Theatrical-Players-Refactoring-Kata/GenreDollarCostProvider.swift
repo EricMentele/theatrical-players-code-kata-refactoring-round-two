@@ -1,6 +1,6 @@
 import Foundation
 
-struct GenreCostProvider: GenreAmountProvider {
+struct GenreDollarCostProvider: GenreAmountProvider {
     func amountFor(genre: String) throws -> AmountCalculator {
         switch (genre) {
         case "tragedy" :

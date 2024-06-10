@@ -3,13 +3,13 @@ import XCTest
 
 class GenreAmountProviderTests: XCTestCase {
     func test_amountFor_throwsErrorOnNewPlayGenre() throws {
-        let sut = GenreCostProvider()
+        let sut = GenreDollarCostProvider()
         
         XCTAssertThrowsError(try sut.amountFor(genre: "always new"))
     }
     
     func test_amountFor_hasCorrectCostWhenHighVolume() throws {
-        let sut = GenreCostProvider()
+        let sut = GenreDollarCostProvider()
         let cases: [(String, Int)] = [
             ("tragedy", 55),
             ("comedy", 35)
