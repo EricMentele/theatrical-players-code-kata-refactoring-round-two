@@ -1,6 +1,5 @@
 class StatementPrinter {
     func print(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> String {
-        var totalAmount = 0
         var volumeCredits = 0
         var result = "Statement for \(invoice.customer)\n"
         
@@ -9,43 +8,58 @@ class StatementPrinter {
         frmt.locale = Locale(identifier: "en_US")
         
         for performance in invoice.performances {
-            var thisAmount = 0
-            guard let play = plays[performance.playID] else {
-                throw UnknownTypeError.unknownTypeError("unknown play")
-            }
-            
-            switch (play.type) {
-            case "tragedy" :
-                    thisAmount = 40000
-                    if (performance.audience > 30) {
-                        thisAmount += 1000 * (performance.audience - 30)
-                    }
-                
-            case "comedy" :
-                    thisAmount = 30000
-                    if (performance.audience > 20) {
-                        thisAmount += 10000 + 500 * (performance.audience - 20)
-                    }
-                    thisAmount += 300 * performance.audience
-            
-            default : throw UnknownTypeError.unknownTypeError("unknown type: \(play.type)")
-            }
-            
             // add volume credits
             volumeCredits += max(performance.audience - 30, 0)
             // add extra credit for every ten comedy attendees
-            if ("comedy" == play.type) {
+            if ("comedy" == (try playFor(playID: performance.playID).type)) {
                 volumeCredits += Int(round(Double(performance.audience / 5)))
             }
             
             // print line for this order
-            result += "  \(play.name): \(frmt.string(for: NSNumber(value: Double((thisAmount / 100))))!) (\(performance.audience) seats)\n"
-            
-            totalAmount += thisAmount
+            result += "  \(try playFor(playID: performance.playID).name): \(frmt.string(for: NSNumber(value: Double((try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)))))!) (\(performance.audience) seats)\n"
         }
-        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(totalAmount / 100)))!)\n"
+        result += "Amount owed is \(frmt.string(for: NSNumber(value: Double(try totalCostOf(invoice.performances))))!)\n"
         result += "You earned \(volumeCredits) credits\n"
         return result
+        
+        func totalCostOf(_ performances: [Performance]) throws -> Int {
+            var result = 0
+            for performance in performances {
+                result += try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience)
+            }
+            return result
+        }
+        
+        func playFor(playID: String) throws -> Play {
+            guard let play = plays[playID] else {
+                throw UnknownTypeError.unknownTypeError("unknown play")
+            }
+            
+            return play
+        }
+        
+        func performanceDollarCostTotalFor(genre: String, attendance: Int) throws -> Int {
+            var cost: Int = 0
+            
+            switch (genre) {
+            case "tragedy" :
+                cost = 40000
+                if (attendance > 30) {
+                    cost += 1000 * (attendance - 30)
+                }
+                
+            case "comedy" :
+                cost = 30000
+                if (attendance > 20) {
+                    cost += 10000 + 500 * (attendance - 20)
+                }
+                cost += 300 * attendance
+                
+            default : throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
+            }
+            
+            return cost / 100
+        }
     }
 }
 
