@@ -29,8 +29,10 @@ class StatementPrinterTests: XCTestCase {
             ]
         )
         
-        let statementPrinter = StatementPrinter()
-        let result = try statementPrinter.formattedStatementText(invoice, plays)
+        let sut: StatementProvider = StatementPrinter()
+        let statementDataProvider: StatementDataProvider = StatementPrinter()
+        let statementData = try statementDataProvider.statementData(invoice, plays)
+        let result = sut.formattedStatement(from: statementData)
         
         XCTAssertEqual(result, expected)
     }
@@ -48,8 +50,9 @@ class StatementPrinterTests: XCTestCase {
             ]
         )
         
-        let statementPrinter = StatementPrinter()
-        XCTAssertThrowsError(try statementPrinter.formattedStatementText(invoice, plays))        
+        let sut: StatementDataProvider = StatementPrinter()
+        
+        XCTAssertThrowsError(try sut.statementData(invoice, plays))
     }
     
     func test_print_throwsErrorOnUnkownPlayType() {
@@ -66,8 +69,9 @@ class StatementPrinterTests: XCTestCase {
             ]
         )
         
-        let statementPrinter = StatementPrinter()
-        XCTAssertThrowsError(try statementPrinter.formattedStatementText(invoice, plays))
+        let sut: StatementDataProvider = StatementPrinter()
+        
+        XCTAssertThrowsError(try sut.statementData(invoice, plays))
     }
 }
 
