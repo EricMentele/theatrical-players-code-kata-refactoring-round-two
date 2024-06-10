@@ -1,3 +1,3 @@
 struct Play {
-    let name, type: String
+    let name, genre: String
 }

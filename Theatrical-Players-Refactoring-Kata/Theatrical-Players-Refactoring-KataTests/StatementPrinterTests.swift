@@ -4,7 +4,6 @@ import XCTest
 
 class StatementPrinterTests: XCTestCase {
     func test_exampleStatement() throws {
-        
         let expected = """
             Statement for BigCo
               Hamlet: $650.00 (55 seats)
@@ -16,9 +15,9 @@ class StatementPrinterTests: XCTestCase {
             """
         
         let plays = [
-            "hamlet": Play(name: "Hamlet", type: "tragedy"),
-            "as-like": Play(name: "As You Like It", type: "comedy"),
-            "othello": Play(name: "Othello", type: "tragedy")
+            "hamlet": Play(name: "Hamlet", genre: "tragedy"),
+            "as-like": Play(name: "As You Like It", genre: "comedy"),
+            "othello": Play(name: "Othello", genre: "tragedy")
         ]
         
         let invoice = Invoice(
@@ -39,8 +38,8 @@ class StatementPrinterTests: XCTestCase {
     
     func test_statementWithNewPlayTypes() {
         let plays = [
-            "henry-v": Play(name: "Henry V", type: "history"),
-            "as-like": Play(name: "As You Like It", type: "pastoral")
+            "henry-v": Play(name: "Henry V", genre: "history"),
+            "as-like": Play(name: "As You Like It", genre: "pastoral")
         ]
         
         let invoice = Invoice(
@@ -57,8 +56,8 @@ class StatementPrinterTests: XCTestCase {
     
     func test_print_throwsErrorOnUnkownPlayType() {
         let plays = [
-            "hamlet": Play(name: "Hamlet", type: "tragedy"),
-            "as-like": Play(name: "As You Like It", type: "comedy")
+            "hamlet": Play(name: "Hamlet", genre: "tragedy"),
+            "as-like": Play(name: "As You Like It", genre: "comedy")
         ]
         
         let invoice = Invoice(

@@ -6,6 +6,12 @@ protocol StatementDataProvider {
     func statementData(_ invoice: Invoice, _ plays: Dictionary<String, Play>) throws -> StatementData
 }
 
+protocol GenreAmountProvider {
+    typealias AmountCalculator = (Int) -> Int
+    
+    func amountFor(genre: String) throws -> AmountCalculator
+}
+
 struct StatementData {
     typealias Charge = (
         playName: String,
@@ -20,6 +26,8 @@ struct StatementData {
 }
 
 class StatementPrinter: StatementProvider {
+    let genreCostProvider: GenreAmountProvider
+    
     func formattedStatement(from statementData: StatementData) -> String {
         var result = "Statement for \(statementData.customerName)\n"
         
@@ -35,6 +43,10 @@ class StatementPrinter: StatementProvider {
         result += "You earned \(statementData.totalVolumeCredits) credits\n"
         return result
     }
+    
+    init(genreCostProvider: GenreAmountProvider = GenreDollarCostProvider()) {
+        self.genreCostProvider = genreCostProvider
+    }
 }
 
 extension StatementPrinter: StatementDataProvider {
@@ -49,7 +61,7 @@ extension StatementPrinter: StatementDataProvider {
         
         func statementCostLineData(_ performance: Performance) throws -> StatementData.Charge {
             (try playFor(playID: performance.playID).name,
-             try performanceDollarCostTotalFor(genre: try playFor(playID: performance.playID).type, attendance: performance.audience),
+             try genreCostProvider.amountFor(genre: try playFor(playID: performance.playID).genre)(performance.audience),
              performance.audience)
         }
         
@@ -57,7 +69,7 @@ extension StatementPrinter: StatementDataProvider {
             var result = 0
             for performance in invoice.performances {
                 // add volume credits
-                result += volumeCreditsFor(genre: try playFor(playID: performance.playID).type, audienceCount: performance.audience)
+                result += volumeCreditsFor(genre: try playFor(playID: performance.playID).genre, audienceCount: performance.audience)
             }
             
             return result
@@ -79,29 +91,6 @@ extension StatementPrinter: StatementDataProvider {
             }
             
             return play
-        }
-        
-        func performanceDollarCostTotalFor(genre: String, attendance: Int) throws -> Int {
-            var cost: Int = 0
-            
-            switch (genre) {
-            case "tragedy" :
-                cost = 40000
-                if (attendance > 30) {
-                    cost += 1000 * (attendance - 30)
-                }
-                
-            case "comedy" :
-                cost = 30000
-                if (attendance > 20) {
-                    cost += 10000 + 500 * (attendance - 20)
-                }
-                cost += 300 * attendance
-                
-            default : throw UnknownTypeError.unknownTypeError("unknown type: \(genre)")
-            }
-            
-            return cost / 100
         }
     }
 }
