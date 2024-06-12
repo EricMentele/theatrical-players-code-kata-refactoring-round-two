@@ -3,7 +3,7 @@ import XCTest
 @testable import Theatrical_Players_Refactoring_Kata
 
 class StatementPrinterTests: XCTestCase {
-    func test_exampleStatement() throws {
+    func test_formattedStatement_generatesPlainTextFormatString() throws {
         let expected = """
             Statement for BigCo
               Hamlet: $650.00 (55 seats)
