@@ -13,9 +13,10 @@
 		104F7D8F2328305A00665957 /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F7D8E2328305A00665957 /* Play.swift */; };
 		104F7D91232830EF00665957 /* Performance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F7D90232830EF00665957 /* Performance.swift */; };
 		104F7D932328312700665957 /* Invoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F7D922328312600665957 /* Invoice.swift */; };
-		104F7D95232831E000665957 /* StatementPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F7D94232831E000665957 /* StatementPrinter.swift */; };
+		104F7D95232831E000665957 /* PlainTextStatementFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F7D94232831E000665957 /* PlainTextStatementFormatter.swift */; };
+		8C7762FB2C1B3FEC005F4614 /* GenreAmountProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7762FA2C1B3FEC005F4614 /* GenreAmountProviderTests.swift */; };
+		8C7BB7DC2C1B396300093213 /* StatementDataModeler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7BB7DB2C1B396300093213 /* StatementDataModeler.swift */; };
 		8C7BE0D42C1690BD000D9945 /* GenreDollarCostProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7BE0D32C1690BD000D9945 /* GenreDollarCostProvider.swift */; };
-		8C7BE0D72C169148000D9945 /* GenreAmountProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7BE0D52C169114000D9945 /* GenreAmountProviderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,9 +39,10 @@
 		104F7D8E2328305A00665957 /* Play.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
 		104F7D90232830EF00665957 /* Performance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Performance.swift; sourceTree = "<group>"; };
 		104F7D922328312600665957 /* Invoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invoice.swift; sourceTree = "<group>"; };
-		104F7D94232831E000665957 /* StatementPrinter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementPrinter.swift; sourceTree = "<group>"; };
+		104F7D94232831E000665957 /* PlainTextStatementFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextStatementFormatter.swift; sourceTree = "<group>"; };
+		8C7762FA2C1B3FEC005F4614 /* GenreAmountProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreAmountProviderTests.swift; sourceTree = "<group>"; };
+		8C7BB7DB2C1B396300093213 /* StatementDataModeler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementDataModeler.swift; sourceTree = "<group>"; };
 		8C7BE0D32C1690BD000D9945 /* GenreDollarCostProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreDollarCostProvider.swift; sourceTree = "<group>"; };
-		8C7BE0D52C169114000D9945 /* GenreAmountProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreAmountProviderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,9 +90,9 @@
 				104F7D8E2328305A00665957 /* Play.swift */,
 				104F7D90232830EF00665957 /* Performance.swift */,
 				104F7D922328312600665957 /* Invoice.swift */,
-				104F7D94232831E000665957 /* StatementPrinter.swift */,
+				104F7D94232831E000665957 /* PlainTextStatementFormatter.swift */,
 				8C7BE0D32C1690BD000D9945 /* GenreDollarCostProvider.swift */,
-				8C7BE0D52C169114000D9945 /* GenreAmountProviderTests.swift */,
+				8C7BB7DB2C1B396300093213 /* StatementDataModeler.swift */,
 			);
 			path = "Theatrical-Players-Refactoring-Kata";
 			sourceTree = "<group>";
@@ -98,6 +100,7 @@
 		104F7D8123282F2900665957 /* Theatrical-Players-Refactoring-KataTests */ = {
 			isa = PBXGroup;
 			children = (
+				8C7762FA2C1B3FEC005F4614 /* GenreAmountProviderTests.swift */,
 				104F7D8223282F2900665957 /* StatementPrinterTests.swift */,
 				104F7D8423282F2900665957 /* Info.plist */,
 			);
@@ -213,9 +216,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C7BB7DC2C1B396300093213 /* StatementDataModeler.swift in Sources */,
 				104F7D91232830EF00665957 /* Performance.swift in Sources */,
 				104F7D932328312700665957 /* Invoice.swift in Sources */,
-				104F7D95232831E000665957 /* StatementPrinter.swift in Sources */,
+				104F7D95232831E000665957 /* PlainTextStatementFormatter.swift in Sources */,
 				8C7BE0D42C1690BD000D9945 /* GenreDollarCostProvider.swift in Sources */,
 				104F7D8F2328305A00665957 /* Play.swift in Sources */,
 			);
@@ -225,7 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C7BE0D72C169148000D9945 /* GenreAmountProviderTests.swift in Sources */,
+				8C7762FB2C1B3FEC005F4614 /* GenreAmountProviderTests.swift in Sources */,
 				104F7D8323282F2900665957 /* StatementPrinterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
