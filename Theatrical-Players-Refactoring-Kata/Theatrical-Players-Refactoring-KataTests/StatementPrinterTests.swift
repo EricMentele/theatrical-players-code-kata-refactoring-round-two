@@ -3,7 +3,7 @@ import XCTest
 @testable import Theatrical_Players_Refactoring_Kata
 
 class StatementPrinterTests: XCTestCase {
-    func test_exampleStatement() throws {
+    func test_formattedStatement_generatesPlainTextFormatString() throws {
         let expected = """
             Statement for BigCo
               Hamlet: $650.00 (55 seats)
@@ -38,8 +38,8 @@ class StatementPrinterTests: XCTestCase {
     
     func test_statementWithNewPlayTypes() {
         let plays = [
-            "henry-v": Play(name: "Henry V", genre: "history"),
-            "as-like": Play(name: "As You Like It", genre: "pastoral")
+            "henry-v": Play(name: "Henry V", genre: "always new"),
+            "as-like": Play(name: "As You Like It", genre: "always new")
         ]
         
         let invoice = Invoice(
