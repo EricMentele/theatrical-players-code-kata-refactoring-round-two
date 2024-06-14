@@ -1,5 +1,3 @@
-import Foundation
-
 struct GenreDollarCostProvider: GenreAmountProvider {
     func amountFor(genre: String) throws -> AmountCalculator {
         switch (genre) {

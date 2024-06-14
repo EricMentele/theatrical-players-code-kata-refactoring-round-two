@@ -28,8 +28,8 @@ class StatementPrinterTests: XCTestCase {
             ]
         )
         
-        let sut: StatementProvider = StatementPrinter()
-        let statementDataProvider: StatementDataProvider = StatementPrinter()
+        let sut: StatementProvider = PlainTextStatementFormatter()
+        let statementDataProvider: StatementDataProvider = StatementDataModeler()
         let statementData = try statementDataProvider.statementData(invoice, plays)
         let result = sut.formattedStatement(from: statementData)
         
@@ -49,7 +49,7 @@ class StatementPrinterTests: XCTestCase {
             ]
         )
         
-        let sut: StatementDataProvider = StatementPrinter()
+        let sut: StatementDataProvider = StatementDataModeler()
         
         XCTAssertThrowsError(try sut.statementData(invoice, plays))
     }
@@ -68,7 +68,7 @@ class StatementPrinterTests: XCTestCase {
             ]
         )
         
-        let sut: StatementDataProvider = StatementPrinter()
+        let sut: StatementDataProvider = StatementDataModeler()
         
         XCTAssertThrowsError(try sut.statementData(invoice, plays))
     }
